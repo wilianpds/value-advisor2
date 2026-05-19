@@ -6,657 +6,171 @@
 <title>Value Advisor AI — Barsi & Buffett</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --gold: #C9A84C;
-    --gold-light: #E8C97A;
-    --gold-dim: rgba(201,168,76,0.15);
-    --dark: #0C0C0C;
-    --dark2: #141414;
-    --dark3: #1C1C1C;
-    --border: rgba(201,168,76,0.2);
-    --text: #EDE9DF;
-    --muted: #7A7060;
-    --green: #4CAF82;
-    --red: #CF6679;
-    --blue: #6A9FD8;
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --gold:#C9A84C;--gold-light:#E8C97A;--gold-dim:rgba(201,168,76,0.12);
+    --dark:#0C0C0C;--dark2:#141414;--dark3:#1C1C1C;
+    --border:rgba(201,168,76,0.2);--text:#EDE9DF;--muted:#7A7060;
+    --green:#4CAF82;--red:#CF6679;
   }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--dark);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-  }
-
-  /* ── HEADER ── */
-  .header {
-    border-bottom: 1px solid var(--border);
-    padding: 28px 48px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    background: rgba(12,12,12,0.95);
-    backdrop-filter: blur(12px);
-    z-index: 100;
-  }
-
-  .brand-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--gold);
-    letter-spacing: -0.3px;
-  }
-
-  .brand-sub {
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    font-family: 'DM Mono', monospace;
-    margin-top: 3px;
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .month-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--gold);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-  }
-
-  .live-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(76,175,130,0.1);
-    border: 1px solid rgba(76,175,130,0.3);
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 11px;
-    color: var(--green);
-    font-family: 'DM Mono', monospace;
-  }
-
-  .dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-  /* ── MAIN ── */
-  .container {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 48px 48px 80px;
-  }
-
-  /* ── API KEY SETUP ── */
-  .setup-card {
-    background: var(--dark2);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 32px;
-    margin-bottom: 36px;
-  }
-
-  .setup-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 18px;
-    color: var(--gold);
-    margin-bottom: 8px;
-  }
-
-  .setup-desc {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 20px;
-  }
-
-  .setup-desc a {
-    color: var(--gold);
-    text-decoration: none;
-  }
-
-  .setup-desc a:hover { text-decoration: underline; }
-
-  .input-row {
-    display: flex;
-    gap: 10px;
-    align-items: stretch;
-  }
-
-  .key-input {
-    flex: 1;
-    background: var(--dark3);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 11px 16px;
-    border-radius: 8px;
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .key-input:focus { border-color: var(--gold); }
-  .key-input::placeholder { color: var(--muted); }
-
-  .save-btn {
-    padding: 11px 22px;
-    background: var(--gold);
-    color: var(--dark);
-    border: none;
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s;
-    white-space: nowrap;
-  }
-
-  .save-btn:hover { background: var(--gold-light); }
-
-  .key-saved {
-    display: none;
-    align-items: center;
-    gap: 8px;
-    margin-top: 10px;
-    font-size: 12px;
-    color: var(--green);
-    font-family: 'DM Mono', monospace;
-  }
-
-  /* ── SECTION TITLE ── */
-  .section-title {
-    font-size: 10px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    margin-bottom: 18px;
-  }
-
-  /* ── MODE SELECTOR ── */
-  .mode-row {
-    display: flex;
-    gap: 0;
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    overflow: hidden;
-    width: fit-content;
-    margin-bottom: 28px;
-  }
-
-  .mode-btn {
-    padding: 10px 24px;
-    background: transparent;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    transition: all 0.2s;
-    border-right: 1px solid var(--border);
-  }
-
-  .mode-btn:last-child { border-right: none; }
-  .mode-btn.active { background: var(--gold); color: var(--dark); }
-  .mode-btn:hover:not(.active) { background: var(--gold-dim); color: var(--text); }
-
-  /* ── CONTROLS ── */
-  .controls-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 14px;
-    margin-bottom: 28px;
-  }
-
-  .ctrl-label {
-    font-size: 10px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 7px;
-  }
-
-  select {
-    width: 100%;
-    background: var(--dark2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    cursor: pointer;
-    outline: none;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237A7060' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-  }
-
-  select:focus { border-color: var(--gold); }
-
-  /* ── ANALYZE BUTTON ── */
-  .analyze-btn {
-    width: 100%;
-    padding: 18px;
-    background: var(--gold);
-    color: var(--dark);
-    border: none;
-    border-radius: 10px;
-    font-family: 'Playfair Display', serif;
-    font-size: 17px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-bottom: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    letter-spacing: 0.2px;
-  }
-
-  .analyze-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
-  .analyze-btn:active { transform: translateY(0); }
-  .analyze-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
-
-  /* ── LOADING ── */
-  .loading-box {
-    background: var(--dark2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 48px 32px;
-    text-align: center;
-    display: none;
-    margin-bottom: 32px;
-  }
-
-  .loading-box.show { display: block; }
-
-  .spinner {
-    width: 40px; height: 40px;
-    border: 2px solid var(--border);
-    border-top-color: var(--gold);
-    border-radius: 50%;
-    animation: spin 0.9s linear infinite;
-    margin: 0 auto 20px;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .loading-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 20px;
-    color: var(--gold);
-    margin-bottom: 6px;
-  }
-
-  .loading-sub {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 28px;
-  }
-
-  .steps-list {
-    list-style: none;
-    display: inline-flex;
-    flex-direction: column;
-    gap: 12px;
-    text-align: left;
-  }
-
-  .step-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    transition: color 0.3s;
-  }
-
-  .step-item.done { color: var(--green); }
-  .step-item.current { color: var(--gold); }
-
-  .step-dot {
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    border: 1.5px solid currentColor;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    flex-shrink: 0;
-    transition: all 0.3s;
-  }
-
-  /* ── ERROR ── */
-  .error-box {
-    background: rgba(207,102,121,0.07);
-    border: 1px solid rgba(207,102,121,0.25);
-    border-radius: 12px;
-    padding: 28px;
-    text-align: center;
-    display: none;
-    margin-bottom: 32px;
-  }
-
-  .error-box.show { display: block; }
-  .error-icon { font-size: 32px; margin-bottom: 12px; }
-  .error-title { color: var(--red); font-size: 15px; font-weight: 500; margin-bottom: 6px; }
-  .error-detail { color: var(--muted); font-size: 13px; line-height: 1.6; }
-
-  .retry-btn {
-    margin-top: 18px;
-    padding: 10px 26px;
-    background: transparent;
-    border: 1px solid var(--red);
-    color: var(--red);
-    border-radius: 7px;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    transition: all 0.2s;
-  }
-
-  .retry-btn:hover { background: rgba(207,102,121,0.1); }
-
-  /* ── RESULTS ── */
-  .results { display: none; }
-  .results.show { display: block; }
-
-  /* ── INTRO CARD ── */
-  .intro-card {
-    background: var(--dark2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 22px 26px;
-    margin-bottom: 22px;
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-  }
-
-  .advisor-avatar {
-    width: 46px; height: 46px;
-    border-radius: 50%;
-    background: var(--gold-dim);
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    flex-shrink: 0;
-  }
-
-  .advisor-name {
-    font-size: 11px;
-    color: var(--gold);
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  .advisor-text {
-    font-size: 14px;
-    color: var(--text);
-    line-height: 1.75;
-    font-style: italic;
-  }
-
-  /* ── STOCK CARDS ── */
-  .stocks-list {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin-bottom: 28px;
-  }
-
-  .stock-card {
-    background: var(--dark2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 22px 26px;
-    display: grid;
-    grid-template-columns: 50px 1fr auto;
-    gap: 18px;
-    align-items: start;
-    cursor: pointer;
-    transition: border-color 0.2s, transform 0.15s;
-    animation: fadeUp 0.4s ease both;
-  }
-
-  .stock-card:hover {
-    border-color: var(--gold);
-    transform: translateY(-1px);
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .rank {
-    width: 42px; height: 42px;
-    border-radius: 50%;
-    background: var(--gold-dim);
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Playfair Display', serif;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--gold);
-  }
-
-  .stock-ticker {
-    font-family: 'DM Mono', monospace;
-    font-size: 17px;
-    font-weight: 500;
-    color: var(--gold);
-    letter-spacing: 1px;
-    margin-bottom: 2px;
-  }
-
-  .stock-company {
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 10px;
-  }
-
-  .stock-thesis {
-    font-size: 13.5px;
-    color: var(--text);
-    line-height: 1.65;
-    margin-bottom: 10px;
-  }
-
-  .tags-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  .tag {
-    padding: 3px 10px;
-    border-radius: 5px;
-    font-size: 10px;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    background: var(--gold-dim);
-    color: var(--gold);
-    border: 1px solid rgba(201,168,76,0.2);
-  }
-
-  /* ── METRICS SIDE ── */
-  .metrics-col {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    min-width: 160px;
-  }
-
-  .metrics-trio {
-    display: flex;
-    gap: 14px;
-    justify-content: flex-end;
-  }
-
-  .metric {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 2px;
-  }
-
-  .metric-lbl {
-    font-size: 9px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .metric-val {
-    font-family: 'DM Mono', monospace;
-    font-size: 14px;
-    font-weight: 500;
-  }
-
-  .pos { color: var(--green); }
-  .neu { color: var(--text); }
-
-  /* ── CONVICTION BAR ── */
-  .conviction {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    align-items: flex-end;
-  }
-
-  .conviction-lbl {
-    font-size: 9px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .bar-track {
-    width: 150px;
-    height: 4px;
-    background: rgba(255,255,255,0.07);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .bar-fill {
-    height: 100%;
-    background: var(--gold);
-    border-radius: 2px;
-    transition: width 1s ease;
-  }
-
-  .conviction-pct {
-    font-size: 11px;
-    color: var(--gold);
-    font-family: 'DM Mono', monospace;
-  }
-
-  /* ── DISCLAIMER ── */
-  .disclaimer {
-    background: rgba(201,168,76,0.04);
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    padding: 16px 20px;
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.7;
-    font-family: 'DM Mono', monospace;
-  }
-
-  /* ── FOOTER ── */
-  .footer {
-    margin-top: 60px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-    text-align: center;
-    font-size: 11px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.5px;
-  }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 700px) {
-    .container { padding: 32px 24px 60px; }
-    .header { padding: 20px 24px; }
-    .controls-grid { grid-template-columns: 1fr; }
-    .stock-card { grid-template-columns: 40px 1fr; }
-    .metrics-col { grid-column: 1/-1; flex-direction: row; flex-wrap: wrap; }
+  html{scroll-behavior:smooth}
+  body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+  .header{border-bottom:1px solid var(--border);padding:24px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:rgba(12,12,12,0.96);backdrop-filter:blur(12px);z-index:100}
+  .brand-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--gold)}
+  .brand-sub{font-size:10px;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-top:3px}
+  .header-right{display:flex;align-items:center;gap:16px}
+  .month-label{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase}
+  .live-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(76,175,130,0.1);border:1px solid rgba(76,175,130,0.3);padding:5px 12px;border-radius:20px;font-size:11px;color:var(--green);font-family:'DM Mono',monospace}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+  .container{max-width:980px;margin:0 auto;padding:40px 40px 80px}
+
+  /* SETUP CARDS */
+  .setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:32px}
+  .setup-card{background:var(--dark2);border:1px solid var(--border);border-radius:12px;padding:24px}
+  .setup-title{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold);margin-bottom:6px}
+  .setup-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:16px}
+  .setup-desc a{color:var(--gold);text-decoration:none}
+  .input-row{display:flex;gap:8px}
+  .key-input{flex:1;background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:7px;font-family:'DM Mono',monospace;font-size:12px;outline:none;transition:border-color 0.2s}
+  .key-input:focus{border-color:var(--gold)}
+  .key-input::placeholder{color:var(--muted)}
+  .save-btn{padding:9px 18px;background:var(--gold);color:var(--dark);border:none;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:background 0.2s;white-space:nowrap}
+  .save-btn:hover{background:var(--gold-light)}
+  .key-saved{display:none;align-items:center;gap:6px;margin-top:8px;font-size:11px;color:var(--green);font-family:'DM Mono',monospace}
+
+  /* SECTION TITLE */
+  .section-title{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:16px}
+
+  /* MODE + CONTROLS */
+  .mode-row{display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;width:fit-content;margin-bottom:24px}
+  .mode-btn{padding:9px 22px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;transition:all 0.2s;border-right:1px solid var(--border)}
+  .mode-btn:last-child{border-right:none}
+  .mode-btn.active{background:var(--gold);color:var(--dark)}
+  .mode-btn:hover:not(.active){background:var(--gold-dim);color:var(--text)}
+  .controls-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:24px}
+  .ctrl-label{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+  select{width:100%;background:var(--dark2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237A7060' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+  select:focus{border-color:var(--gold)}
+
+  /* BUTTON */
+  .analyze-btn{width:100%;padding:17px;background:var(--gold);color:var(--dark);border:none;border-radius:10px;font-family:'Playfair Display',serif;font-size:17px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-bottom:36px;display:flex;align-items:center;justify-content:center;gap:10px}
+  .analyze-btn:hover{background:var(--gold-light);transform:translateY(-1px)}
+  .analyze-btn:active{transform:translateY(0)}
+  .analyze-btn:disabled{opacity:0.45;cursor:not-allowed;transform:none}
+
+  /* LOADING */
+  .loading-box{background:var(--dark2);border:1px solid var(--border);border-radius:12px;padding:44px 32px;text-align:center;display:none;margin-bottom:32px}
+  .loading-box.show{display:block}
+  .spinner{width:38px;height:38px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.9s linear infinite;margin:0 auto 18px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loading-title{font-family:'Playfair Display',serif;font-size:19px;color:var(--gold);margin-bottom:5px}
+  .loading-sub{font-size:13px;color:var(--muted);margin-bottom:24px}
+  .steps-list{list-style:none;display:inline-flex;flex-direction:column;gap:10px;text-align:left}
+  .step-item{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;transition:color 0.3s}
+  .step-item.done{color:var(--green)}
+  .step-item.current{color:var(--gold)}
+  .step-dot{width:20px;height:20px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;transition:all 0.3s}
+
+  /* ERROR */
+  .error-box{background:rgba(207,102,121,0.07);border:1px solid rgba(207,102,121,0.25);border-radius:12px;padding:28px;text-align:center;display:none;margin-bottom:32px}
+  .error-box.show{display:block}
+  .error-title{color:var(--red);font-size:15px;font-weight:500;margin-bottom:8px}
+  .error-detail{color:var(--muted);font-size:13px;line-height:1.7;font-family:'DM Mono',monospace}
+  .retry-btn{margin-top:16px;padding:9px 24px;background:transparent;border:1px solid var(--red);color:var(--red);border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;transition:all 0.2s}
+  .retry-btn:hover{background:rgba(207,102,121,0.1)}
+
+  /* RESULTS */
+  .results{display:none}
+  .results.show{display:block}
+  .data-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(76,175,130,0.08);border:1px solid rgba(76,175,130,0.25);padding:5px 14px;border-radius:20px;font-size:11px;color:var(--green);font-family:'DM Mono',monospace;margin-bottom:20px}
+
+  /* INTRO */
+  .intro-card{background:var(--dark2);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:20px;display:flex;gap:14px;align-items:flex-start}
+  .advisor-avatar{width:44px;height:44px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+  .advisor-name{font-size:10px;color:var(--gold);font-family:'DM Mono',monospace;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+  .advisor-text{font-size:13.5px;color:var(--text);line-height:1.75;font-style:italic}
+
+  /* STOCK CARDS */
+  .stocks-list{display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
+  .stock-card{background:var(--dark2);border:1px solid var(--border);border-radius:12px;padding:20px 24px;display:grid;grid-template-columns:46px 1fr auto;gap:16px;align-items:start;cursor:pointer;transition:border-color 0.2s,transform 0.15s;animation:fadeUp 0.4s ease both}
+  .stock-card:hover{border-color:var(--gold);transform:translateY(-1px)}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .rank{width:40px;height:40px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--gold)}
+  .stock-ticker{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--gold);letter-spacing:1px;margin-bottom:2px}
+  .stock-company{font-size:11px;color:var(--muted);margin-bottom:8px}
+  .stock-price-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .stock-price{font-family:'DM Mono',monospace;font-size:15px;color:var(--text);font-weight:500}
+  .stock-change{font-family:'DM Mono',monospace;font-size:12px;padding:2px 8px;border-radius:4px}
+  .stock-change.pos{background:rgba(76,175,130,0.12);color:var(--green)}
+  .stock-change.neg{background:rgba(207,102,121,0.12);color:var(--red)}
+  .stock-thesis{font-size:13px;color:var(--text);line-height:1.65;margin-bottom:8px}
+  .tags-row{display:flex;flex-wrap:wrap;gap:5px}
+  .tag{padding:2px 9px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;letter-spacing:0.5px;text-transform:uppercase;background:var(--gold-dim);color:var(--gold);border:1px solid rgba(201,168,76,0.15)}
+  .metrics-col{display:flex;flex-direction:column;gap:10px;min-width:165px}
+  .metrics-trio{display:flex;gap:14px;justify-content:flex-end}
+  .metric{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+  .metric-lbl{font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px}
+  .metric-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500}
+  .pos{color:var(--green)}.neu{color:var(--text)}.neg-val{color:var(--red)}
+  .conviction{display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+  .bar-track{width:150px;height:4px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden}
+  .bar-fill{height:100%;background:var(--gold);border-radius:2px;transition:width 1s ease}
+  .conviction-pct{font-size:11px;color:var(--gold);font-family:'DM Mono',monospace}
+  .data-source{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;text-align:right;margin-top:4px}
+
+  /* DISCLAIMER */
+  .disclaimer{background:rgba(201,168,76,0.04);border:1px solid var(--border);border-radius:9px;padding:14px 18px;font-size:11px;color:var(--muted);line-height:1.7;font-family:'DM Mono',monospace}
+  .footer{margin-top:50px;padding-top:20px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:0.5px}
+
+  @media(max-width:700px){
+    .container{padding:28px 20px 60px}
+    .header{padding:18px 20px}
+    .setup-grid{grid-template-columns:1fr}
+    .controls-grid{grid-template-columns:1fr}
+    .stock-card{grid-template-columns:38px 1fr}
+    .metrics-col{grid-column:1/-1;flex-direction:row;flex-wrap:wrap}
   }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="header">
   <div>
     <div class="brand-name">Value Advisor AI</div>
-    <div class="brand-sub">Barsi &amp; Buffett Methodology</div>
+    <div class="brand-sub">Dados Reais B3 + IA Fundamentalista</div>
   </div>
   <div class="header-right">
     <div class="month-label" id="monthLabel"></div>
-    <div class="live-badge"><div class="dot"></div>Mercado ativo</div>
+    <div class="live-badge"><div class="dot"></div>Dados ao vivo</div>
   </div>
 </header>
 
-<!-- MAIN -->
 <div class="container">
 
-  <!-- API KEY SETUP -->
-  <div class="setup-card" id="setupCard">
-    <div class="setup-title">🔑 Configure sua chave de API</div>
-    <div class="setup-desc">
-      Para rodar localmente, você precisa de uma chave da Anthropic (gratuita para começar).<br>
-      Obtenha a sua em <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → API Keys → Create Key.<br>
-      A chave fica salva apenas no seu navegador (localStorage), nunca é enviada a terceiros.
+  <!-- SETUP -->
+  <div class="setup-grid">
+    <div class="setup-card">
+      <div class="setup-title">🔑 Chave Anthropic (IA)</div>
+      <div class="setup-desc">Obtém em <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → API Keys. Salva só no seu navegador.</div>
+      <div class="input-row">
+        <input class="key-input" type="password" id="anthropicKey" placeholder="sk-ant-api03-..." />
+        <button class="save-btn" onclick="saveKey('anthropic')">Salvar</button>
+      </div>
+      <div class="key-saved" id="anthropicSaved">✓ Chave salva!</div>
     </div>
-    <div class="input-row">
-      <input class="key-input" type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." />
-      <button class="save-btn" onclick="saveKey()">Salvar chave</button>
+    <div class="setup-card">
+      <div class="setup-title">📊 Token BRAPI (Dados B3)</div>
+      <div class="setup-desc">Obtém em <a href="https://brapi.dev" target="_blank">brapi.dev</a> → Login → Dashboard → Token. Plano gratuito funciona!</div>
+      <div class="input-row">
+        <input class="key-input" type="password" id="brapiKey" placeholder="seu_token_brapi..." />
+        <button class="save-btn" onclick="saveKey('brapi')">Salvar</button>
+      </div>
+      <div class="key-saved" id="brapiSaved">✓ Token salvo!</div>
     </div>
-    <div class="key-saved" id="keySaved">✓ Chave salva com sucesso. Pode usar o advisor!</div>
   </div>
 
-  <!-- CONFIGURAR -->
+  <!-- CONFIG -->
   <div class="section-title">Configurar análise</div>
 
   <div class="mode-row">
@@ -678,12 +192,12 @@
       <div class="ctrl-label">Setor foco</div>
       <select id="sector">
         <option value="all">Todos os setores</option>
-        <option value="financials">Bancos &amp; Financeiro</option>
-        <option value="utilities">Energia &amp; Utilities</option>
-        <option value="consumer">Consumo &amp; Varejo</option>
-        <option value="health">Saúde &amp; Farmácia</option>
-        <option value="industry">Indústria &amp; Logística</option>
-        <option value="tech">Tecnologia</option>
+        <option value="Finance">Bancos &amp; Financeiro</option>
+        <option value="Utilities">Energia &amp; Utilities</option>
+        <option value="Consumer Cyclical">Consumo &amp; Varejo</option>
+        <option value="Healthcare">Saúde &amp; Farmácia</option>
+        <option value="Industrials">Indústria &amp; Logística</option>
+        <option value="Basic Materials">Materiais Básicos</option>
       </select>
     </div>
     <div>
@@ -697,312 +211,346 @@
   </div>
 
   <button class="analyze-btn" id="analyzeBtn" onclick="runAnalysis()">
-    📊 Analisar mercado agora
+    📊 Analisar mercado com dados reais
   </button>
 
   <!-- LOADING -->
   <div class="loading-box" id="loadingBox">
     <div class="spinner"></div>
-    <div class="loading-title">Analisando o mercado...</div>
-    <div class="loading-sub">Aplicando critérios fundamentalistas</div>
+    <div class="loading-title">Buscando dados reais...</div>
+    <div class="loading-sub" id="loadingSub">Conectando à B3 via BRAPI</div>
     <ul class="steps-list" id="stepsList">
-      <li class="step-item" data-i="0"><div class="step-dot">1</div>Varrendo preços e volume do mercado</li>
-      <li class="step-item" data-i="1"><div class="step-dot">2</div>Coletando balanços e DREs recentes</li>
-      <li class="step-item" data-i="2"><div class="step-dot">3</div>Calculando P/L, P/VP, ROE, EBITDA</li>
-      <li class="step-item" data-i="3"><div class="step-dot">4</div>Analisando histórico de dividendos</li>
-      <li class="step-item" data-i="4"><div class="step-dot">5</div>Aplicando filtros de dívida e segurança</li>
-      <li class="step-item" data-i="5"><div class="step-dot">6</div>Formulando tese de investimento</li>
+      <li class="step-item" data-i="0"><div class="step-dot">1</div>Buscando lista de ações na B3</li>
+      <li class="step-item" data-i="1"><div class="step-dot">2</div>Coletando cotações e preços reais</li>
+      <li class="step-item" data-i="2"><div class="step-dot">3</div>Obtendo P/L, DY, ROE da CVM/B3</li>
+      <li class="step-item" data-i="3"><div class="step-dot">4</div>Verificando histórico de dividendos</li>
+      <li class="step-item" data-i="4"><div class="step-dot">5</div>Enviando dados reais para IA analisar</li>
+      <li class="step-item" data-i="5"><div class="step-dot">6</div>IA formulando teses de investimento</li>
     </ul>
   </div>
 
   <!-- ERROR -->
   <div class="error-box" id="errorBox">
-    <div class="error-icon">⚠️</div>
-    <div class="error-title" id="errorTitle">Algo deu errado</div>
+    <div class="error-title" id="errorTitle">Erro na análise</div>
     <div class="error-detail" id="errorDetail"></div>
     <button class="retry-btn" onclick="reset()">Tentar novamente</button>
   </div>
 
   <!-- RESULTS -->
   <div class="results" id="results">
+    <div class="data-badge" id="dataBadge">✓ Dados reais da B3 via BRAPI</div>
     <div class="intro-card">
       <div class="advisor-avatar">🧠</div>
       <div>
-        <div class="advisor-name">Advisor IA — Barsi &amp; Buffett</div>
+        <div class="advisor-name">Advisor IA — Análise Fundamentalista</div>
         <div class="advisor-text" id="advisorText"></div>
       </div>
     </div>
     <div class="stocks-list" id="stocksList"></div>
     <div class="disclaimer">
-      ⚠ Esta análise é gerada por inteligência artificial para fins educativos e informativos.
-      Não constitui recomendação de investimento. Consulte um assessor financeiro certificado (CFP/CGA)
-      antes de tomar decisões. Retornos passados não garantem resultados futuros.
+      ⚠ Os dados de cotação e indicadores são obtidos em tempo real via BRAPI (fonte: B3/CVM). A análise e teses são geradas por IA com critérios fundamentalistas. Não constitui recomendação de investimento. Consulte um assessor financeiro certificado antes de investir. Retornos passados não garantem resultados futuros.
     </div>
   </div>
 
-  <div class="footer">Value Advisor AI &nbsp;·&nbsp; Powered by Claude (Anthropic) &nbsp;·&nbsp; uso pessoal</div>
-
+  <div class="footer">Value Advisor AI &nbsp;·&nbsp; Dados: BRAPI (B3/CVM) &nbsp;·&nbsp; Análise: Claude (Anthropic) &nbsp;·&nbsp; uso pessoal</div>
 </div>
 
 <script>
-  // ── State ──────────────────────────────────────────────────────────
-  let mode = 'br';
-  let stepTimer = null;
+// ── Configuração de ações por setor para análise ──────────────────────
+const TICKERS_BR = {
+  all: ['ITUB4','BBDC4','BBAS3','SANB11','CGAS5','CPFE3','TAEE11','EGIE3','BBSE3','WEGE3','VALE3','PETR4','ABEV3','RENT3','LREN3','RADL3','FLRY3','PRIO3','CSAN3','VIVT3'],
+  Finance: ['ITUB4','BBDC4','BBAS3','SANB11','BBSE3','IRBR3','BMGB4','BRSR6','CIEL3','PSSA3'],
+  Utilities: ['CPFE3','TAEE11','EGIE3','CGAS5','CMIG4','ENGI11','TRPL4','COCE5','AURE3','ENEV3'],
+  'Consumer Cyclical': ['LREN3','MGLU3','AMER3','GUAR3','HGTX3','SOMA3','VVAR3','CEAB3','ALPA4','GRND3'],
+  Healthcare: ['RADL3','FLRY3','DASA3','HAPV3','RDOR3','GNDI3','PNVL3','ODPV3','ONCO3','QUAL3'],
+  Industrials: ['WEGE3','RENT3','EMBR3','RAIL3','TGMA3','CSMG3','FRAS3','MOVI3','POMO4','AGRO3'],
+  'Basic Materials': ['VALE3','CSNA3','GGBR4','SUZB3','KLBN11','DXCO3','BRAP4','USIM5','CBAV3','FESA4']
+};
 
-  // ── Month label ────────────────────────────────────────────────────
-  const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
-                  'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  const now = new Date();
-  document.getElementById('monthLabel').textContent =
-    MONTHS[now.getMonth()].toUpperCase() + ' ' + now.getFullYear();
+const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const now = new Date();
+document.getElementById('monthLabel').textContent = MONTHS[now.getMonth()].toUpperCase() + ' ' + now.getFullYear();
 
-  // ── API Key management ─────────────────────────────────────────────
-  function saveKey() {
-    const k = document.getElementById('apiKeyInput').value.trim();
-    if (!k.startsWith('sk-ant')) {
-      alert('Chave inválida. Deve começar com sk-ant-');
-      return;
-    }
-    localStorage.setItem('vaa_api_key', k);
-    document.getElementById('keySaved').style.display = 'flex';
-    document.getElementById('setupCard').style.borderColor = 'rgba(76,175,130,0.4)';
+let mode = 'br';
+let stepTimer = null;
+
+// ── Keys ──────────────────────────────────────────────────────────────
+function saveKey(type) {
+  const val = document.getElementById(type === 'anthropic' ? 'anthropicKey' : 'brapiKey').value.trim();
+  if (!val) { alert('Por favor insira o valor antes de salvar.'); return; }
+  localStorage.setItem('vaa_' + type, val);
+  const el = document.getElementById(type === 'anthropic' ? 'anthropicSaved' : 'brapiSaved');
+  el.style.display = 'flex';
+  document.getElementById(type === 'anthropic' ? 'anthropicKey' : 'brapiKey').closest('.setup-card').style.borderColor = 'rgba(76,175,130,0.4)';
+}
+
+function getKey(type) { return localStorage.getItem('vaa_' + type) || ''; }
+
+// Load saved keys
+['anthropic','brapi'].forEach(t => {
+  const k = getKey(t);
+  if (k) {
+    document.getElementById(t === 'anthropic' ? 'anthropicKey' : 'brapiKey').value = k;
+    document.getElementById(t === 'anthropic' ? 'anthropicSaved' : 'brapiSaved').style.display = 'flex';
+    document.getElementById(t === 'anthropic' ? 'anthropicKey' : 'brapiKey').closest('.setup-card').style.borderColor = 'rgba(76,175,130,0.4)';
   }
+});
 
-  function getKey() {
-    return localStorage.getItem('vaa_api_key') || '';
+function setMode(btn, m) {
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  mode = m;
+}
+
+function show(id) { document.getElementById(id).classList.add('show'); }
+function hide(id) { document.getElementById(id).classList.remove('show'); }
+
+function reset() {
+  hide('loadingBox'); hide('errorBox'); hide('results');
+  const btn = document.getElementById('analyzeBtn');
+  btn.disabled = false;
+  btn.innerHTML = '📊 Analisar mercado com dados reais';
+  if (stepTimer) clearInterval(stepTimer);
+  document.querySelectorAll('.step-item').forEach(s => {
+    s.classList.remove('done','current');
+    s.querySelector('.step-dot').textContent = parseInt(s.dataset.i) + 1;
+  });
+}
+
+function setStep(i) {
+  const steps = document.querySelectorAll('.step-item');
+  steps.forEach((s, idx) => {
+    s.classList.remove('current','done');
+    if (idx < i) { s.classList.add('done'); s.querySelector('.step-dot').textContent = '✓'; }
+    else if (idx === i) { s.classList.add('current'); }
+    else { s.querySelector('.step-dot').textContent = idx + 1; }
+  });
+}
+
+// ── Fetch BRAPI data ──────────────────────────────────────────────────
+async function fetchBrapi(tickers, brapiToken) {
+  const tickerStr = tickers.join(',');
+  const url = `https://brapi.dev/api/quote/${tickerStr}?fundamental=true&dividends=true&token=${brapiToken}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error('BRAPI: ' + (err.message || `HTTP ${res.status}`));
   }
+  const data = await res.json();
+  return data.results || [];
+}
 
-  // Check if key already saved
-  if (getKey()) {
-    document.getElementById('apiKeyInput').value = getKey();
-    document.getElementById('keySaved').style.display = 'flex';
-    document.getElementById('setupCard').style.borderColor = 'rgba(76,175,130,0.4)';
-  }
+// ── Main ──────────────────────────────────────────────────────────────
+async function runAnalysis() {
+  const anthropicKey = getKey('anthropic');
+  const brapiToken = getKey('brapi');
 
-  // ── Mode toggle ────────────────────────────────────────────────────
-  function setMode(btn, m) {
-    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    mode = m;
-  }
+  if (!anthropicKey) { alert('Configure sua chave da Anthropic primeiro.'); return; }
+  if (!brapiToken) { alert('Configure seu token da BRAPI primeiro.'); return; }
 
-  // ── UI helpers ─────────────────────────────────────────────────────
-  function show(id)  { document.getElementById(id).classList.add('show'); }
-  function hide(id)  { document.getElementById(id).classList.remove('show'); }
+  reset();
+  document.getElementById('analyzeBtn').disabled = true;
+  document.getElementById('analyzeBtn').innerHTML = '⏳ Buscando dados reais...';
+  show('loadingBox');
 
-  function reset() {
-    hide('loadingBox'); hide('errorBox'); hide('results');
-    const btn = document.getElementById('analyzeBtn');
-    btn.disabled = false;
-    btn.innerHTML = '📊 Analisar mercado agora';
-    if (stepTimer) clearInterval(stepTimer);
-    document.querySelectorAll('.step-item').forEach(s => {
-      s.classList.remove('done','current');
-      s.querySelector('.step-dot').textContent = s.dataset.i * 1 + 1;
-    });
-  }
+  const sector = document.getElementById('sector').value;
+  const profile = document.getElementById('profile').value;
+  const horizon = document.getElementById('horizon').value;
+  const tickers = TICKERS_BR[sector] || TICKERS_BR.all;
 
-  function animateSteps() {
-    const steps = document.querySelectorAll('.step-item');
-    let i = 0;
-    steps[0].classList.add('current');
-    stepTimer = setInterval(() => {
-      steps[i].classList.remove('current');
-      steps[i].classList.add('done');
-      steps[i].querySelector('.step-dot').textContent = '✓';
-      i++;
-      if (i < steps.length) steps[i].classList.add('current');
-      else clearInterval(stepTimer);
-    }, 1900);
-  }
+  try {
+    // Step 1-2: Fetch BRAPI
+    setStep(0);
+    document.getElementById('loadingSub').textContent = 'Conectando à B3 via BRAPI...';
+    await new Promise(r => setTimeout(r, 400));
+    setStep(1);
 
-  // ── Main analysis ──────────────────────────────────────────────────
-  async function runAnalysis() {
-    const key = getKey();
-    if (!key) {
-      alert('Por favor, salve sua chave de API da Anthropic primeiro.');
-      document.getElementById('apiKeyInput').focus();
-      return;
-    }
+    const brapiData = await fetchBrapi(tickers, brapiToken);
+    if (!brapiData.length) throw new Error('Nenhum dado retornado pela BRAPI. Verifique seu token.');
 
-    reset();
+    // Step 2-3: Process data
+    setStep(2);
+    document.getElementById('loadingSub').textContent = 'Processando indicadores fundamentalistas...';
+    await new Promise(r => setTimeout(r, 300));
 
-    const btn = document.getElementById('analyzeBtn');
-    btn.disabled = true;
-    btn.innerHTML = '⏳ Analisando...';
-    show('loadingBox');
-    animateSteps();
+    // Format data for AI
+    const stocksSummary = brapiData.map(s => ({
+      ticker: s.symbol,
+      nome: s.shortName || s.longName || s.symbol,
+      preco: s.regularMarketPrice,
+      variacao_dia: s.regularMarketChangePercent,
+      market_cap: s.marketCap,
+      pl: s.priceEarnings,
+      lpa: s.earningsPerShare,
+      dy_12m: s.dividendsData?.yield || null,
+      ultimo_dividendo: s.dividendsData?.cashDividends?.[0]?.paymentDate || null,
+      roe: s.defaultKeyStatistics?.returnOnEquity ? (s.defaultKeyStatistics.returnOnEquity * 100).toFixed(1) + '%' : null,
+      divida_ebitda: s.financialData?.debtToEquity || null,
+      margem_lucro: s.financialData?.profitMargins ? (s.financialData.profitMargins * 100).toFixed(1) + '%' : null,
+      receita_crescimento: s.financialData?.revenueGrowth ? (s.financialData.revenueGrowth * 100).toFixed(1) + '%' : null,
+      max_52s: s.fiftyTwoWeekHigh,
+      min_52s: s.fiftyTwoWeekLow,
+    })).filter(s => s.preco && s.preco > 0);
 
-    const profile  = document.getElementById('profile').value;
-    const sector   = document.getElementById('sector').value;
-    const horizon  = document.getElementById('horizon').value;
+    setStep(3);
+    document.getElementById('loadingSub').textContent = 'Verificando histórico de dividendos...';
+    await new Promise(r => setTimeout(r, 300));
 
-    const mktLabel = mode === 'br' ? 'B3 (mercado brasileiro)' :
-                     mode === 'us' ? 'NYSE/Nasdaq (mercado americano)' :
-                     'mercado global (B3 + NYSE/Nasdaq)';
+    setStep(4);
+    document.getElementById('loadingSub').textContent = 'Enviando dados para IA analisar...';
 
     const profileLabel =
-      profile === 'barsi'   ? 'Luiz Barsi — foco absoluto em dividendos robustos, empresas perenes e defensivas, yield sustentável acima de 6% ao ano, setor regulado ou essencial' :
-      profile === 'buffett' ? 'Warren Buffett — foco em vantagem competitiva durável (moat), gestão de qualidade, margem de segurança no preço, retorno sobre patrimônio consistente' :
-                              'Híbrido Barsi+Buffett — empresas com vantagem competitiva clara que também pagam dividendos crescentes e sustentáveis';
+      profile === 'barsi' ? 'Luiz Barsi — priorize dividend yield alto e sustentável, empresas perenes, setor essencial/regulado, payout consistente' :
+      profile === 'buffett' ? 'Warren Buffett — priorize vantagem competitiva durável (moat), margem de segurança no preço, ROE elevado, gestão de qualidade' :
+      'Híbrido Barsi+Buffett — empresas com moat forte que também pagam dividendos crescentes';
 
     const horizonLabel =
-      horizon === 'dividends' ? 'geração de renda passiva por dividendos crescentes' :
-      horizon === 'long'      ? 'longo prazo (5+ anos), foco em compounding' :
-                                'médio prazo (1–3 anos), bom upside com fundamentos sólidos';
+      horizon === 'dividends' ? 'renda passiva por dividendos crescentes e sustentáveis' :
+      horizon === 'long' ? 'longo prazo (5+ anos), compounding e valorização patrimonial' :
+      'médio prazo (1–3 anos), upside de preço + fundamentos sólidos';
 
-    const sectorLabel = sector === 'all' ? 'todos os setores' : sector;
-    const mes = MONTHS[now.getMonth()] + ' de ' + now.getFullYear();
+    const prompt = `Você é um advisor de investimentos com a mentalidade de ${profileLabel}.
 
-    const prompt = `Você é um advisor de investimentos com a mentalidade e rigor analítico combinados de ${profileLabel}.
+DADOS REAIS coletados agora da B3 via BRAPI (fonte oficial: B3 + CVM):
+${JSON.stringify(stocksSummary, null, 2)}
 
-Contexto da análise:
-- Mercado: ${mktLabel}
-- Setor: ${sectorLabel}
+Contexto:
+- Mês: ${MONTHS[now.getMonth()]} de ${now.getFullYear()}
 - Horizonte: ${horizonLabel}
-- Mês de referência: ${mes}
-- Data atual: ${now.toLocaleDateString('pt-BR')}
+- Mercado: B3 (Brasil)
 
-Realize uma análise fundamentalista profunda e indique as 5 melhores ações para este mês. Para cada ação considere:
-1. Valuation atual (P/L, P/VP, EV/EBITDA) com margem de segurança
-2. Qualidade e consistência dos lucros (crescimento, margens)
-3. Histórico e sustentabilidade de dividendos (payout, fluxo de caixa livre)
-4. Solidez do balanço (dívida líquida/EBITDA, cobertura de juros)
-5. Vantagem competitiva (moat: marca, rede, custo, switching cost, ativo raro)
-6. Contexto macro e setorial atual
-7. Por que este investidor compraria esta ação HOJE
+Com base EXCLUSIVAMENTE nos dados reais acima, selecione e analise as 5 MELHORES ações. Para cada uma:
+1. Justifique com os números reais fornecidos (P/L, DY, ROE, etc.)
+2. Contextualize o valuation (preço atual vs máx/mín 52 semanas)
+3. Explique o moat e por que o investidor compraria hoje
+4. Seja específico e factual — use os dados reais, não invente
 
-Responda SOMENTE com JSON puro e válido, sem markdown nem explicações fora do JSON. Estrutura exata:
+Responda SOMENTE com JSON puro e válido:
 {
-  "intro": "2-3 frases em primeira pessoa como o advisor, mencionando o mês, contexto de mercado e sua filosofia aplicada. Tom sábio, experiente, direto.",
+  "intro": "2-3 frases como o advisor, mencionando que a análise é baseada em dados reais da B3 coletados hoje, e o contexto de mercado observado nos dados.",
   "stocks": [
     {
       "ticker": "TICKER",
-      "name": "Nome completo da empresa",
-      "sector": "Setor",
-      "thesis": "Tese de investimento em 2-3 frases concretas e convincentes. Mencione o diferencial e por que agora.",
-      "pe": "valor numérico ex: 8.4",
-      "dy": "valor com % ex: 7.2%",
-      "roe": "valor com % ex: 19%",
-      "debt": "ex: 1.2x EBITDA",
-      "conviction": número inteiro de 60 a 98,
-      "tags": ["tag1", "tag2", "tag3"],
-      "upside": "ex: +35%"
+      "name": "Nome",
+      "thesis": "Tese baseada nos dados reais em 2-3 frases.",
+      "pe": "valor P/L dos dados ou N/D",
+      "dy": "DY dos dados ou N/D",
+      "roe": "ROE dos dados ou N/D",
+      "price": "preço atual em R$",
+      "change": "variação % do dia",
+      "vs52h": "% abaixo da máxima de 52 semanas",
+      "conviction": número inteiro 60-98,
+      "tags": ["tag1","tag2","tag3"]
     }
   ]
 }`;
 
-    try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': key,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: JSON.stringify({
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 2000,
-          messages: [{ role: 'user', content: prompt }]
-        })
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        const msg = err.error?.message || JSON.stringify(err) || `HTTP ${res.status}`; throw new Error(`[${res.status}] ${msg}`);
-      }
-
-      const data = await res.json();
-      const raw = (data.content || [])
-        .filter(b => b.type === 'text')
-        .map(b => b.text)
-        .join('');
-
-      let clean = raw.replace(/```json|```/g, '').trim();
-      const s = clean.indexOf('{'), e = clean.lastIndexOf('}');
-      if (s === -1 || e === -1) throw new Error('JSON não encontrado na resposta.');
-      clean = clean.slice(s, e + 1);
-
-      const result = JSON.parse(clean);
-      renderResults(result);
-
-    } catch (err) {
-      hide('loadingBox');
-      show('errorBox');
-      document.getElementById('errorTitle').textContent = 'Erro na análise';
-      document.getElementById('errorDetail').innerHTML =
-        err.message + '<br><br>Verifique: (1) sua chave de API está correta, (2) você tem créditos na conta Anthropic, (3) sua conexão está ativa.';
-      btn.disabled = false;
-      btn.innerHTML = '📊 Analisar mercado agora';
-      if (stepTimer) clearInterval(stepTimer);
-    }
-  }
-
-  // ── Render results ─────────────────────────────────────────────────
-  function renderResults(data) {
-    hide('loadingBox');
-    document.getElementById('advisorText').textContent = data.intro || '';
-
-    const list = document.getElementById('stocksList');
-    list.innerHTML = '';
-
-    (data.stocks || []).forEach((s, i) => {
-      const tags = (s.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
-      const card = document.createElement('div');
-      card.className = 'stock-card';
-      card.style.animationDelay = (i * 0.1) + 's';
-      card.innerHTML = `
-        <div class="rank">${i + 1}</div>
-        <div>
-          <div class="stock-ticker">${s.ticker}</div>
-          <div class="stock-company">${s.name}${s.sector ? ' &nbsp;·&nbsp; ' + s.sector : ''}</div>
-          <div class="stock-thesis">${s.thesis}</div>
-          <div class="tags-row">${tags}</div>
-        </div>
-        <div class="metrics-col">
-          <div class="metrics-trio">
-            <div class="metric">
-              <div class="metric-lbl">P/L</div>
-              <div class="metric-val neu">${s.pe}</div>
-            </div>
-            <div class="metric">
-              <div class="metric-lbl">DY</div>
-              <div class="metric-val pos">${s.dy}</div>
-            </div>
-            <div class="metric">
-              <div class="metric-lbl">ROE</div>
-              <div class="metric-val pos">${s.roe}</div>
-            </div>
-            ${s.upside ? `<div class="metric">
-              <div class="metric-lbl">Upside</div>
-              <div class="metric-val pos">${s.upside}</div>
-            </div>` : ''}
-          </div>
-          ${s.debt ? `<div style="text-align:right; font-size:11px; color:var(--muted); font-family:'DM Mono',monospace;">Dívida: ${s.debt}</div>` : ''}
-          <div class="conviction">
-            <div class="conviction-lbl">Convicção</div>
-            <div class="bar-track"><div class="bar-fill" style="width:0%" data-pct="${s.conviction}"></div></div>
-            <div class="conviction-pct">${s.conviction}%</div>
-          </div>
-        </div>
-      `;
-      list.appendChild(card);
+    const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': anthropicKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 2000,
+        messages: [{ role: 'user', content: prompt }]
+      })
     });
 
-    show('results');
+    setStep(5);
+    document.getElementById('loadingSub').textContent = 'IA formulando teses de investimento...';
 
-    // Animate bars after render
-    setTimeout(() => {
-      document.querySelectorAll('.bar-fill').forEach(el => {
-        el.style.width = el.dataset.pct + '%';
-      });
-    }, 100);
+    if (!aiRes.ok) {
+      const errBody = await aiRes.json().catch(() => ({}));
+      throw new Error('Claude API: ' + (errBody.error?.message || `HTTP ${aiRes.status}`));
+    }
 
-    const btn = document.getElementById('analyzeBtn');
-    btn.disabled = false;
-    btn.innerHTML = '🔄 Nova análise';
+    const aiData = await aiRes.json();
+    const raw = (aiData.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+    let clean = raw.replace(/```json|```/g, '').trim();
+    const s = clean.indexOf('{'), e = clean.lastIndexOf('}');
+    if (s === -1) throw new Error('Resposta inválida da IA. Tente novamente.');
+    clean = clean.slice(s, e + 1);
+    const result = JSON.parse(clean);
+
+    renderResults(result, brapiData);
+
+  } catch (err) {
+    hide('loadingBox');
+    show('errorBox');
+    document.getElementById('errorTitle').textContent = 'Erro na análise';
+    document.getElementById('errorDetail').innerHTML = err.message + '<br><br>Dicas: verifique se o token BRAPI e chave Anthropic estão corretos e com saldo.';
+    document.getElementById('analyzeBtn').disabled = false;
+    document.getElementById('analyzeBtn').innerHTML = '📊 Analisar mercado com dados reais';
   }
+}
+
+function renderResults(data, brapiRaw) {
+  hide('loadingBox');
+  const ts = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+  document.getElementById('dataBadge').innerHTML = `✓ Dados reais da B3 via BRAPI &nbsp;·&nbsp; Atualizado às ${ts}`;
+  document.getElementById('advisorText').textContent = data.intro || '';
+
+  const list = document.getElementById('stocksList');
+  list.innerHTML = '';
+
+  (data.stocks || []).forEach((s, i) => {
+    const raw = brapiRaw.find(r => r.symbol === s.ticker) || {};
+    const price = raw.regularMarketPrice ? `R$ ${raw.regularMarketPrice.toFixed(2)}` : (s.price || 'N/D');
+    const chg = raw.regularMarketChangePercent;
+    const chgStr = chg != null ? (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%' : (s.change || '');
+    const chgClass = chg != null ? (chg >= 0 ? 'pos' : 'neg') : 'pos';
+    const tags = (s.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
+    const max52 = raw.fiftyTwoWeekHigh;
+    const vs52 = max52 && raw.regularMarketPrice ? ((raw.regularMarketPrice / max52 - 1) * 100).toFixed(1) + '%' : (s.vs52h || 'N/D');
+
+    const card = document.createElement('div');
+    card.className = 'stock-card';
+    card.style.animationDelay = (i * 0.08) + 's';
+    card.innerHTML = `
+      <div class="rank">${i+1}</div>
+      <div>
+        <div class="stock-ticker">${s.ticker}</div>
+        <div class="stock-company">${s.name}</div>
+        <div class="stock-price-row">
+          <span class="stock-price">${price}</span>
+          ${chgStr ? `<span class="stock-change ${chgClass}">${chgStr}</span>` : ''}
+        </div>
+        <div class="stock-thesis">${s.thesis}</div>
+        <div class="tags-row">${tags}</div>
+      </div>
+      <div class="metrics-col">
+        <div class="metrics-trio">
+          <div class="metric"><div class="metric-lbl">P/L</div><div class="metric-val neu">${s.pe}</div></div>
+          <div class="metric"><div class="metric-lbl">DY</div><div class="metric-val pos">${s.dy}</div></div>
+          <div class="metric"><div class="metric-lbl">ROE</div><div class="metric-val pos">${s.roe}</div></div>
+        </div>
+        <div class="metric" style="align-items:flex-end">
+          <div class="metric-lbl">vs máx 52s</div>
+          <div class="metric-val ${vs52 && vs52.startsWith('-') ? 'pos' : 'neg-val'}">${vs52}</div>
+        </div>
+        <div class="conviction">
+          <div class="metric-lbl" style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px">Convicção</div>
+          <div class="bar-track"><div class="bar-fill" style="width:0%" data-pct="${s.conviction}"></div></div>
+          <div class="conviction-pct">${s.conviction}%</div>
+        </div>
+        <div class="data-source">fonte: brapi/b3</div>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+
+  show('results');
+  setTimeout(() => {
+    document.querySelectorAll('.bar-fill').forEach(el => { el.style.width = el.dataset.pct + '%'; });
+  }, 150);
+
+  document.getElementById('analyzeBtn').disabled = false;
+  document.getElementById('analyzeBtn').innerHTML = '🔄 Nova análise';
+}
 </script>
 </body>
 </html>
