@@ -329,15 +329,31 @@ function setStep(i) {
 
 // ── Fetch BRAPI data ──────────────────────────────────────────────────
 async function fetchBrapi(tickers, brapiToken) {
-  const tickerStr = tickers.join(',');
-  const url = `https://brapi.dev/api/quote/${tickerStr}?fundamental=true&dividends=true&token=${brapiToken}`;
-  const res = await fetch(url);
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error('BRAPI: ' + (err.message || `HTTP ${res.status}`));
+  const results = [];
+
+  for (const ticker of tickers) {
+    try {
+      const url = `https://brapi.dev/api/quote/${ticker}?fundamental=true&dividends=true&token=${brapiToken}`;
+
+      const res = await fetch(url);
+
+      if (!res.ok) continue;
+
+      const data = await res.json();
+
+      if (data.results && data.results.length > 0) {
+        results.push(data.results[0]);
+      }
+
+      // evita rate limit
+      await new Promise(r => setTimeout(r, 400));
+
+    } catch (err) {
+      console.error('Erro no ticker:', ticker, err);
+    }
   }
-  const data = await res.json();
-  return data.results || [];
+
+  return results;
 }
 
 // ── Main ──────────────────────────────────────────────────────────────
@@ -390,7 +406,7 @@ async function runAnalysis() {
       receita_crescimento: s.financialData?.revenueGrowth ? (s.financialData.revenueGrowth * 100).toFixed(1) + '%' : null,
       max_52s: s.fiftyTwoWeekHigh,
       min_52s: s.fiftyTwoWeekLow,
-    })).filter(s => s.preco && s.preco > 0);
+    })).filter(s => s && s.preco && s.preco > 0);
 
     setStep(3);
     document.getElementById('loadingSub').textContent = 'Verificando histórico de dividendos...';
