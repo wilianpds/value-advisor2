@@ -2,7 +2,7 @@ name: Inject API Keys & Deploy
 
 on:
   push:
-    branches: [main]
+    branches: [gh-pages]
   workflow_dispatch:
 
 env:
