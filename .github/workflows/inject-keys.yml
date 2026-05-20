@@ -1,0 +1,25 @@
+name: Inject API Keys & Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Inject API keys into HTML
+        run: |
+          sed -i "s|window.ANTHROPIC_KEY = ''|window.ANTHROPIC_KEY = '${{ secrets.ANTHROPIC_KEY }}'|g" index.html
+          sed -i "s|window.BRAPI_TOKEN   = ''|window.BRAPI_TOKEN   = '${{ secrets.BRAPI_TOKEN }}'|g" index.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          publish_branch: gh-pages
